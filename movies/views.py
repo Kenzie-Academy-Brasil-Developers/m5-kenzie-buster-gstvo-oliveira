@@ -9,13 +9,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 class MovieView(APIView, CustomPageNumber):
+
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsEmployeeOrReadOnly]
 
     def get(self, request):
-        movie = Movie.objects.all()
-        page = self.paginate_queryset(movie, request, view=self)
+        movies = Movie.objects.all()
+        page = self.paginate_queryset(movies, request)
         serializer = MovieSerializer(page, many=True)
+        
         return self.get_paginated_response(serializer.data)
 
     def post(self, request):
